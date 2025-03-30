@@ -75,6 +75,7 @@ message WebcastGiftMessage {
   WebcastGiftMessageGiftDetails giftDetails = 15;
   string monitorExtra = 22;
   WebcastGiftMessageGiftExtra giftExtra = 23;
+  string receiverUserInGroupLive = 47;
 }
 
 message WebcastGiftMessageGiftDetails {
@@ -95,6 +96,11 @@ message WebcastGiftMessageGiftImage {
   string giftPictureUrl = 1;
 }
 
+//Live Group Message Ingo
+message WebcastGroupLiveMemberNotifyMessage {
+  WebcastMessageEvent event = 1;
+  repeated LiveMember liveMembers = 3; 
+}
 
 // Battle start
 message WebcastLinkMicBattle {
@@ -161,13 +167,51 @@ message WebcastMessageEvent {
 message WebcastMessageEventDetails {
   string displayType = 1;
   string label = 2;
+  repeated GiftUserDetails giftUserDetails = 4;
 }
+
+message GiftUserDetails {
+  optional UserDetails userDetails = 21;
+  message UserDetails {
+    User user = 1;
+  }
+}
+
 
 // Source: Co-opted https://github.com/zerodytrash/TikTok-Livestream-Chat-Connector/issues/19#issuecomment-1074150342
 message WebcastLiveIntroMessage {
   uint64 id = 2;
   string description = 4;
   User user = 5;
+}
+
+message WebcastCompetitionMessage {
+  WebcastMessageEvent event = 1;
+  uint32 status = 3;
+  optional MemberCompetition memberCompetition = 105;
+  message MemberCompetition {
+    repeated MemberCompetitionDetails memberCompetitionDetails = 1;
+  }
+  optional InitCompetition initCompetition = 102;
+  message InitCompetition {
+    MemberInitCompetition memberInitCompetition = 2;
+    message MemberInitCompetition {
+      repeated MemberInitCompetitionDetails memberInitCompetitionDetails = 3;
+      message MemberInitCompetitionDetails {
+        LiveMember competitor = 2;
+      }
+    }
+  }
+  optional EndCompetition endCompetition = 104;
+  message EndCompetition {
+    repeated MemberCompetitionDetails memberCompetitionDetails = 2;
+  }  
+}
+
+message MemberCompetitionDetails {
+  uint64 userId = 1;
+  uint64 score = 3;
+  optional uint32 winningStatus = 4;
 }
 
 message SystemMessage {
@@ -248,6 +292,11 @@ message WebcastSubNotifyMessage {
 
 // ==================================
 // Generic stuff
+message LiveMember {
+  uint64 userId = 1;
+  string nickname = 3;
+  ProfilePicture profilePicture = 4;
+}
 
 message User {
   uint64 userId = 1;
